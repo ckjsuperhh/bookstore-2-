@@ -13,6 +13,9 @@
 class log {
 public:
     static void show(const int count) {
+        if (login_status.empty()) {
+            throw std::runtime_error("");
+        }
         if (login_status.back().privilege != 7) {
             throw std::runtime_error("");
         }
@@ -32,6 +35,9 @@ public:
     }
 
     static void show() {
+        if (login_status.empty()) {
+            throw std::runtime_error("");
+        }
         if (login_status.back().privilege != 7) {
             throw std::runtime_error("");
         }

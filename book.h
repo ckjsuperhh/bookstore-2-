@@ -134,7 +134,6 @@ public:
 
     static void buy(char ISBN_[21], const int quantity) {
         if (login_status.empty()) {
-
             throw std::runtime_error("");
         }
         if (quantity <= 0) {
@@ -153,10 +152,10 @@ public:
     }
 
     static void select(char ISBN_[21]) {
-        if (login_status.back().privilege < 3) {
+        if (login_status.empty()) {
             throw std::runtime_error("");
         }
-        if (login_status.empty()) {
+        if (login_status.back().privilege < 3) {
             throw std::runtime_error("");
         }
         if (ISBN_reference.search(ISBN_).empty()) {
@@ -201,7 +200,6 @@ public:
     }
 
     static void modify_ISBN(char ISBN_[21]) {
-
         //std::cout<<"delete:"<<ISBN[login_status.back().num].ISBN<<' '<<login_status.back().num<<"\tchange:"<<ISBN[login_status.back().num].ISBN<<"->"<<ISBN_<<"\tinsert:"<<ISBN_<<" "<<login_status.back().num<<std::endl;
         ISBN_reference.Val_delete(ISBN[login_status.back().num].ISBN, login_status.back().num);
         strcpy(ISBN[login_status.back().num].ISBN, ISBN_);

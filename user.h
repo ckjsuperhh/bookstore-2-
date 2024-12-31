@@ -12,7 +12,7 @@ using std::unordered_map;
 class user_operation {
 public:
     static void _login(char user_id[31], const string &password) {
-        auto user_info = user_file.search(user_id);
+        const auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
         }
@@ -57,6 +57,9 @@ public:
     }
 
     static void _modify(char user_id[31], const string & current_password, char new_password[31]) {
+        if (login_status.empty()) {
+            throw std::runtime_error("");
+        }
         const auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
@@ -75,6 +78,9 @@ public:
     }
 
     static void _modify(char user_id[31], char new_password[31]) {
+        if (login_status.empty()) {
+            throw std::runtime_error("");
+        }
         auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
@@ -88,8 +94,10 @@ public:
     }
 
     static void _useradd(char user_id[31], char password[31], int privilege, char username[31]) {
-        auto user_info = user_file.search(user_id);
-        if (!user_info.empty()) {
+        if (login_status.empty()) {
+            throw std::runtime_error("");
+        }
+        if (const auto user_info = user_file.search(user_id); !user_info.empty()) {
             throw std::runtime_error("");
         }
         // cout<<login_status.back().privilege<<std::endl;
@@ -104,10 +112,10 @@ public:
         if (login_map[string(user_id)]) {
             throw std::runtime_error("");
         }
-        if (login_status.back().privilege != 7) {
+        if (login_status.empty()||login_status.back().privilege != 7) {
             throw std::runtime_error("");
         }
-        auto user_info = user_file.search(user_id);
+        const auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
         }
