@@ -16,7 +16,7 @@ using namespace std;
             return 0;
          }
       }catch (...) {
-         cout<<"invalid\n";
+         cout<<"Invalid\n";
       }
    }
 }
