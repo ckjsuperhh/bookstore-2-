@@ -455,6 +455,95 @@ public:
     }
 };
 
+template<class T, int info_len = 2>
+class MemoryRiver_vector {
+    //第一个数字为index:现在的最后一个Leaf类存到了哪个位置(取尾位置)
+private:
+    fstream file;
+    string file_name;
+
+public:
+    MemoryRiver_vector() = default;
+
+    explicit MemoryRiver_vector(string file_name) : file_name(std::move(file_name)) {
+    }
+
+    ~MemoryRiver_vector() { file.close(); }
+
+    void initialise(const string &FN = "") {
+        if (!FN.empty()) file_name = FN;
+        ifstream check_file;
+        check_file.open(file_name, std::ios::in | std::ios::out);
+        if (!check_file.good()) {
+            file.open(file_name, std::ios::out);
+            int tmp = 0;
+            for (int i = 0; i < info_len; ++i)
+                file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
+            file.close();
+        }
+        check_file.close();
+        file.open(file_name, std::ios::in | std::ios::out);
+    }
+
+    void get_info(int &tmp, const int n) {
+        if (n > info_len) return;
+        file.seekg(static_cast<int>((n - 1) * sizeof(int)));
+        file.read(reinterpret_cast<char *>(&tmp), sizeof(int));
+    }
+
+    int get_info(const int n) {
+        int tmp;
+        get_info(tmp, n);
+        return tmp;
+    }
+
+    void write_info(int tmp, const int n) {
+        if (n > info_len) return;
+        file.seekp(static_cast<int>(sizeof(int) * (n - 1)));
+        file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
+    }
+
+    int size() {
+        return get_info(2);
+    }
+
+    bool empty() {
+        return get_info(2)==0;
+    }
+
+    vector<T> get_vector() {
+        vector<T> tmp;
+        for (int i=0;i<this->size();i++) {
+            tmp.push_back(read(i));
+        }
+        return tmp;
+    }
+    int write(T  t) {
+        int index = get_info(1);
+        if (index == 0) {
+            index += sizeof(int) * info_len;
+        }
+        const int n=get_info(2);
+        file.seekp(index);
+        file.write(reinterpret_cast<char *>(&t), sizeof(T));
+        write_info(index+sizeof(T), 1);
+        write_info(n+1,2);
+        return index;
+    }
+
+    void update(T t, const int n) {//0-base
+        file.seekp(sizeof(int) * info_len+n*sizeof(T));
+        file.write(reinterpret_cast<char *>(&t), sizeof(T));
+    }
+
+    T read(const int n) {//0-base
+        T tmp;
+        file.seekg(sizeof(int) * info_len+n*sizeof(T));
+        file.read(reinterpret_cast<char *>(&tmp), sizeof(T));
+        return tmp;
+    }
+};
+
 using std::vector;
 using std::map;
 using std::unordered_map;
@@ -518,9 +607,9 @@ struct book_info {
 };
 
 struct finance_info {
-    double income;
-    double outcome;
-
+    double income=0;
+    double outcome=0;
+finance_info()=default;
     finance_info(const double &income, const double &outcome): income(income), outcome(outcome) {
     }
 };
@@ -540,14 +629,14 @@ struct stack_id {
 };
 
 inline BPT<char[31], int> user_file; //利用存储编号，作为一个BPT
-inline vector<name_and_password> user_storage; // 利用编号存储密码，用户名，权限等信息
+inline MemoryRiver_vector<name_and_password> user_storage; // 利用编号存储密码，用户名，权限等信息
 inline unordered_map<string, int> login_map; //记录某个id登录了几次
 inline vector<stack_id> login_status; //用一个vector按顺序维护id、选取图书的编号和privilege的栈(没有选取图书则是-1)
 inline BPT<char[21], int> ISBN_reference; //维护ISBN到对应位置/编号的BPT
-inline vector<book_info> ISBN; //维护编号到ISBN的对应
+inline MemoryRiver_vector<book_info> ISBN; //维护编号到图书信息的对应
 inline BPT<char[61], int> KeyWord_reference;
 inline BPT<char[61], int> BookName_reference;
 inline BPT<char[61], int> Author_reference;
-inline vector<finance_info> finance_list; //存下每一笔收入支出
+inline MemoryRiver_vector<finance_info> finance_list; //存下每一笔收入支出
 
 #endif //DATABASE_1_H

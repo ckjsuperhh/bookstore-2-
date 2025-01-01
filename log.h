@@ -27,9 +27,9 @@ public:
             return;
         }
         double income = 0, outcome = 0;
-        for (int i = static_cast<int>(finance_list.size() - count); i < finance_list.size(); i++) {
-            income += finance_list[i].income;
-            outcome += finance_list[i].outcome;
+        for (int i = finance_list.size() - count; i < finance_list.size(); i++) {
+            income += finance_list.read(i).income;
+            outcome += finance_list.read(i).outcome;
         }
         std::cout << std::fixed << std::setprecision(2) << "+ " << income << " - " << outcome << '\n';
     }
@@ -45,9 +45,9 @@ public:
             cout << "+ 0.00 - 0.00\n";
         }
         double income = 0, outcome = 0;
-        for (const auto &x: finance_list) {
-            income += x.income;
-            outcome += x.outcome;
+        for (int i=0;i<finance_list.size();i++) {
+            income += finance_list.read(i).income;
+            outcome += finance_list.read(i).outcome;
         }
         cout << std::fixed << std::setprecision(2) << "+ " << income << " - " << outcome << '\n';
     }

@@ -12,12 +12,18 @@ class cmd {
 public:
     static void initialise() {
         user_file.initialise("user_file(1)", "user_file(2)");
+        user_storage.initialise("user_storage");
         ISBN_reference.initialise("IBSN_file(1)", "IBSN_file(2)");
         KeyWord_reference.initialise("KeyWord_file(1)", "KeyWord_reference(2)");
         Author_reference.initialise("Author(1)", "Author(2)");
         BookName_reference.initialise("BookName(1)", "BookName(2)");
-        user_file.insert(char_more<char[31]>("root").get_char().data(), 0);
-        user_storage.emplace_back(char_more<char[31]>("sjtu").get_char().data(), char_more<char[31]>("root").get_char().data(), 7);
+        ISBN.initialise("ISBN");
+        finance_list.initialise("Finance_List");
+        if (const auto tmp=ISBN_reference.search(char_more<char[31]>("root").get_char().data());tmp.empty()) {
+            user_file.insert(char_more<char[31]>("root").get_char().data(), 0);
+            user_storage.write(name_and_password(char_more<char[31]>("sjtu").get_char().data(), char_more<char[31]>("root").get_char().data(), 7));
+        }
+
     }
 
     static void analyse(const string &a) {
@@ -161,7 +167,7 @@ public:
                 if (types[i] == "ISBN" && tokens[i].size() > 6) {
                     // cout<<ISBN[login_status.back().num].ISBN<<std::endl;
                     // cout<<char_more<char[21]>(tokens[i].substr(6)).get_char().data()<<std::endl;
-                    if (strcmp(ISBN[login_status.back().num].ISBN, char_more<char[21]>(tokens[i].substr(6)).get_char().data()) == 0) {
+                    if (strcmp(ISBN.read(login_status.back().num).ISBN, char_more<char[21]>(tokens[i].substr(6)).get_char().data()) == 0) {
                         throw std::runtime_error("");
                     }
                     if (!ISBN_reference.search(char_more<char[21]>(tokens[i].substr(6)).get_char().data()).empty()) {

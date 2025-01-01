@@ -55,8 +55,8 @@ public:
             return;
         }
         vector<book_info> tmp;
-        for (auto x: ISBN_vector) {
-            tmp.push_back(ISBN[x]);
+        for (const auto x: ISBN_vector) {
+            tmp.push_back(ISBN.read(x));
         }
         std::ranges::sort(tmp, [](const book_info &a1, const book_info &a2)-> bool { return strcmp(a1.ISBN, a2.ISBN) > 0; });
         for (const auto x: tmp) {
@@ -72,9 +72,9 @@ public:
             cout << '\n';
             return;
         }
-        auto tmp = ISBN;
+        auto tmp = ISBN.get_vector();
         std::ranges::sort(tmp, [](const book_info &a1, const book_info &a2)-> bool { return strcmp(a1.ISBN, a2.ISBN) < 0; });
-        for (auto x: tmp) {
+        for (const auto x: tmp) {
             cout << x.ISBN << "\t" << x.BookName << "\t" << x.Author << "\t" << x.KeyWord << "\t" <<std::fixed<<std::setprecision(2)<< std::stod(x.Price) << "\t" << x.Storage << "\n";
         }
     }
@@ -90,8 +90,8 @@ public:
                 return;
             }
             vector<book_info> tmp;
-            for (auto x: ISBN_vector) {
-                tmp.push_back(ISBN[x]);
+            for (const auto x: ISBN_vector) {
+                tmp.push_back(ISBN.read(x));
             }
             std::ranges::sort(tmp, [](const book_info &a1, const book_info &a2)-> bool { return strcmp(a1.ISBN, a2.ISBN) < 0; });
             for (const auto x: tmp) {
@@ -105,7 +105,7 @@ public:
             }
             vector<book_info> tmp;
             for (auto x: ISBN_vector) {
-                tmp.push_back(ISBN[x]);
+                tmp.push_back(ISBN.read(x));
             }
             std::ranges::sort(tmp, [](const book_info &a1, const book_info &a2)-> bool { return strcmp(a1.ISBN, a2.ISBN) < 0; });
             for (const auto x: tmp) {
@@ -123,7 +123,7 @@ public:
             }
             vector<book_info> tmp;
             for (auto x: ISBN_vector) {
-                tmp.push_back(ISBN[x]);
+                tmp.push_back(ISBN.read(x));
             }
             std::ranges::sort(tmp, [](const book_info &a1, const book_info &a2)-> bool { return strcmp(a1.ISBN, a2.ISBN) < 0; });
             for (const auto x: tmp) {
@@ -143,12 +143,14 @@ public:
         if (ISBN_vector.empty()) {
             throw std::runtime_error("");
         }
-        if (ISBN[ISBN_vector[0]].Storage < quantity) {
+        if (ISBN.read(ISBN_vector[0]).Storage < quantity) {
             throw std::runtime_error("");
         }
-        cout << std::fixed << std::setprecision(2) << std::stod(ISBN[ISBN_vector[0]].Price) * quantity << '\n';
-        finance_list.emplace_back(std::stod(ISBN[ISBN_vector[0]].Price) * quantity, 0);
-        ISBN[ISBN_vector[0]].Storage -= quantity;
+        cout << std::fixed << std::setprecision(2) << std::stod(ISBN.read(ISBN_vector[0]).Price) * quantity << '\n';
+        finance_list.write({std::stod(ISBN.read(ISBN_vector[0]).Price) * quantity, 0});
+        auto a=ISBN.read(ISBN_vector[0]);
+        a.Storage -= quantity;
+        ISBN.update(a,ISBN_vector[0]);
     }
 
     static void select(char ISBN_[21]) {
@@ -159,28 +161,32 @@ public:
             throw std::runtime_error("");
         }
         if (ISBN_reference.search(ISBN_).empty()) {
-            ISBN_reference.insert(ISBN_, static_cast<int>(ISBN.size()));
-            ISBN.emplace_back(ISBN_);
+            ISBN_reference.insert(ISBN_, ISBN.size());
+            ISBN.write(book_info(ISBN_));
         }
         login_status.back().num=ISBN_reference.search(ISBN_)[0];
     }
 
     static void modify_other(const string &a, char information[61]) {
         if (a == "name") {
-            if (!BookName_reference.search(ISBN[login_status.back().num].BookName).empty()) {
-                BookName_reference.Val_delete(ISBN[login_status.back().num].BookName, login_status.back().num);
+            if (!BookName_reference.search(ISBN.read(login_status.back().num).BookName).empty()) {
+                BookName_reference.Val_delete(ISBN.read(login_status.back().num).BookName, login_status.back().num);
             }
-            strcpy(ISBN[login_status.back().num].BookName, information);
+            auto tmp=ISBN.read(login_status.back().num);
+            strcpy(tmp.BookName, information);
+            ISBN.update(tmp,login_status.back().num);
             BookName_reference.insert(information, login_status.back().num);
         } else if (a == "author") {
-            if (!Author_reference.search(ISBN[login_status.back().num].Author).empty()) {
-                 Author_reference.Val_delete(ISBN[login_status.back().num].Author, login_status.back().num);
+            if (!Author_reference.search(ISBN.read(login_status.back().num).Author).empty()) {
+                 Author_reference.Val_delete(ISBN.read(login_status.back().num).Author, login_status.back().num);
             }
-            strcpy(ISBN[login_status.back().num].Author, information);
+            auto tmp=ISBN.read(login_status.back().num);
+            strcpy(tmp.Author, information);
+            ISBN.update(tmp,login_status.back().num);
             Author_reference.insert(information, login_status.back().num);
         } else if (a == "keyword") {
             const auto keys1=find_KeyWord(information);
-            const auto keys2=find_KeyWord(ISBN[login_status.back().num].KeyWord);
+            const auto keys2=find_KeyWord(ISBN.read(login_status.back().num).KeyWord);
             for (const auto& x:keys2) {
                 // cout<<"key_word="<<x<<std::endl;
                 KeyWord_reference.Val_delete(char_more<char[61]>(x).get_char().data(), login_status.back().num);
@@ -189,11 +195,15 @@ public:
                 // cout<<"key_word="<<x<<std::endl;
                 KeyWord_reference.insert(char_more<char[61]>(x).get_char().data(), login_status.back().num);
             }
-            strcpy(ISBN[login_status.back().num].KeyWord, information);
+            auto tmp=ISBN.read(login_status.back().num);
+            strcpy(tmp.KeyWord, information);
+            ISBN.update(tmp,login_status.back().num);
         } else if (a == "price") {
             // cout<<"price"<<ISBN[login_status.back().num].Price<<std::endl;
             // cout<<"changed price"<<information<<std::endl;
-            strncpy(ISBN[login_status.back().num].Price, information, 14);
+            auto tmp=ISBN.read(login_status.back().num);
+            strncpy(tmp.Price, information,14);
+            ISBN.update(tmp,login_status.back().num);
             // cout<<"price"<<ISBN[login_status.back().num].Price<<std::endl;
             // cout<<"changed price"<<information<<std::endl;
         }
@@ -201,8 +211,10 @@ public:
 
     static void modify_ISBN(char ISBN_[21]) {
         //std::cout<<"delete:"<<ISBN[login_status.back().num].ISBN<<' '<<login_status.back().num<<"\tchange:"<<ISBN[login_status.back().num].ISBN<<"->"<<ISBN_<<"\tinsert:"<<ISBN_<<" "<<login_status.back().num<<std::endl;
-        ISBN_reference.Val_delete(ISBN[login_status.back().num].ISBN, login_status.back().num);
-        strcpy(ISBN[login_status.back().num].ISBN, ISBN_);
+        ISBN_reference.Val_delete(ISBN.read(login_status.back().num).ISBN, login_status.back().num);
+        auto tmp=ISBN.read(login_status.back().num);
+        strcpy(tmp.ISBN, ISBN_);
+        ISBN.update(tmp,login_status.back().num);
         ISBN_reference.insert(ISBN_, login_status.back().num);
     }
 
@@ -213,8 +225,11 @@ public:
         if (login_status.back().num == -1 || quantity <= 0 || total_cost <= 0) {
             throw std::runtime_error("");
         }
-        finance_list.emplace_back(0, total_cost);
-        ISBN[login_status.back().num].Storage += quantity;
+
+        finance_list.write({0, total_cost});
+        auto a=ISBN.read(login_status.back().num);
+        a.Storage += quantity;
+        ISBN.update(a,login_status.back().num);
     }
 };
 
