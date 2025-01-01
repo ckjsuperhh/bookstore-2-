@@ -23,9 +23,48 @@ public:
             user_file.insert(char_more<char[31]>("root").get_char().data(), 0);
             user_storage.write(name_and_password(char_more<char[31]>("sjtu").get_char().data(), char_more<char[31]>("root").get_char().data(), 7));
         }
-
     }
 
+    static bool check_ISBN(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126)){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_BookName(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126&&a!='\"')){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_Author(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126&&a!='\"')){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_KeyWord(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126&&a!='\"')){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_Price(const char x[14]) {
+        for (const auto &a:x) {
+            if (!('0'<=a&&a<='9')||a=='.'){
+                return true;
+            }
+        }
+        return false;
+    }
     static void analyse(const string &a) {
         int cnt = 0;
         vector<string> tokens;
@@ -37,7 +76,7 @@ public:
         while (a[r] != ' ' && r != a.size()) {
             r++;
         }
-        string info = a.substr(l, r - l);
+        const string info = a.substr(l, r - l);
         l = r;
         while (l != a.size()) {
             while (a[l] == ' '&&l<a.size()) {
@@ -170,15 +209,30 @@ public:
                         throw std::runtime_error("");
                     }
                     infos.push_back(tokens[i].substr(5));
+                    if (check_ISBN(infos.back().data())) {
+                        throw std::runtime_error("");
+                    }
                 } else if (types[i] == "name" && tokens[i][6] == '\"' && tokens[i].back() == '\"' && tokens[i].size() > 8) {
                     infos.push_back(tokens[i].substr(7, tokens[i].size() - 8));
+                    if (check_BookName(infos.back().data())) {
+                        throw std::runtime_error("");
+                    }
                 } else if (types[i] == "author" && tokens[i][8] == '\"' && tokens[i].back() == '\"' && tokens[i].size() > 10) {
                     infos.push_back(tokens[i].substr(9, tokens[i].size() - 10));
+                    if (check_Author(infos.back().data())) {
+                        throw std::runtime_error("");
+                    }
                 } else if (types[i] == "keyword" && tokens[i][9] == '\"' && tokens[i].back() == '\"' && tokens[i].size() > 11) {
                     vector<string> keywords = book::find_KeyWord(tokens[i].substr(10, tokens[i].size() - 11));
                     infos.push_back(tokens[i].substr(10, tokens[i].size() - 11));
+                    if (check_KeyWord(infos.back().data())) {
+                        throw std::runtime_error("");
+                    }
                 } else if (types[i] == "price" && tokens[i].size() > 7) {
                     infos.push_back(tokens[i].substr(7));
+                    if (check_Price(infos.back().data())) {
+                        throw std::runtime_error("");
+                    }
                 } else {
                     throw std::runtime_error("");
                 }

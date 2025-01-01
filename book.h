@@ -16,6 +16,46 @@ using std::cout;
 
 class book {
 public:
+    static bool check_ISBN(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126)){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_BookName(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126&&a!='\"')){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_Author(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126&&a!='\"')){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_KeyWord(const char x[61]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126&&a!='\"')){
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool check_Price(const char x[14]) {
+        for (const auto &a:x) {
+            if (!('0'<=a&&a<='9')||a=='.'){
+                return true;
+            }
+        }
+        return false;
+    }
     static vector<string> find_KeyWord(const string &a) {
         if(a[0]=='|'||a.back()=='|'){
             throw std::runtime_error("");
@@ -45,6 +85,9 @@ public:
     }
 
     static void ISBN_show(char ISBN_[21]) {
+        if (check_ISBN(ISBN_)) {
+            throw std::runtime_error("");
+        }
         if (login_status.empty()) {
             throw std::runtime_error("");
         }
@@ -83,6 +126,9 @@ public:
             throw std::runtime_error("");
         }
         if (a == "name") {
+            if (check_BookName(information)) {
+                throw std::runtime_error("");
+            }
             auto ISBN_vector = BookName_reference.search(information);
             if (ISBN_vector.empty()) {
                 cout << '\n';
@@ -97,6 +143,9 @@ public:
                 cout << x.ISBN << "\t" << x.BookName << "\t" << x.Author << "\t" << x.KeyWord << "\t" <<std::fixed<<std::setprecision(2)<< std::stod(x.Price) << "\t" << x.Storage << "\n";
             }
         } else if (a == "author") {
+            if (check_Author(information)) {
+                throw std::runtime_error("");
+            }
             auto ISBN_vector = Author_reference.search(information);
             if (ISBN_vector.empty()) {
                 cout << '\n';
@@ -111,6 +160,9 @@ public:
                 cout << x.ISBN << "\t" << x.BookName << "\t" << x.Author << "\t" << x.KeyWord << "\t" <<std::fixed<<std::setprecision(2)<< std::stod(x.Price)<< "\t" << x.Storage << "\n";
             }
         } else if (a == "keyword") {
+            if (check_KeyWord(information)) {
+                throw std::runtime_error("");
+            }
             if (const auto key = find_KeyWord(information); key.size() > 1 || key.empty()) {
                 throw std::runtime_error("");
             }
@@ -131,6 +183,9 @@ public:
     }
 
     static void buy(char ISBN_[21], const int quantity) {
+        if (check_ISBN(ISBN_)) {
+            throw std::runtime_error("");
+        }
         if (login_status.empty()) {
             throw std::runtime_error("");
         }
@@ -152,6 +207,9 @@ public:
     }
 
     static void select(char ISBN_[21]) {
+        if (check_ISBN(ISBN_)) {
+            throw std::runtime_error("");
+        }
         if (login_status.empty()) {
             throw std::runtime_error("");
         }

@@ -11,7 +11,30 @@ using std::unordered_map;
 
 class user_operation {
 public:
+    static bool check_User_id(const char x[31]) {
+        for (const auto &a:x) {
+            if (!(a=='_'||('a'<=a&&a<='z')||('A'<=a&&a<='Z')||('0'<=a&&a<='9'))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static bool check_User_name(const char x[31]) {
+        for (const auto &a:x) {
+            if (!(32<=a&&a<=126)){
+                return true;
+            }
+        }
+        return false;
+    }
     static void _login(char user_id[31], const string &password) {
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_id(password.c_str())) {
+            throw std::runtime_error("");
+        }
         const auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
@@ -24,7 +47,10 @@ public:
     }
 
     static void _login(char user_id[31]) {
-        auto user_info = user_file.search(user_id);
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
+        const auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
         }
@@ -47,6 +73,15 @@ public:
     }
 
     static void _register(char user_id[31], char password[31], char username[31]) {
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_id(password)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_name(username)) {
+            throw std::runtime_error("");
+        }
         if (!user_file.search(user_id).empty()) {
             throw std::runtime_error("");
         }
@@ -55,6 +90,15 @@ public:
     }
 
     static void _modify(char user_id[31], const string & current_password, char new_password[31]) {
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_id(current_password.data())) {
+            throw std::runtime_error("");
+        }
+        if (check_User_id(new_password)) {
+            throw std::runtime_error("");
+        }
         if (login_status.empty()) {
             throw std::runtime_error("");
         }
@@ -74,6 +118,12 @@ public:
     }
 
     static void _modify(char user_id[31], char new_password[31]) {
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_id(new_password)) {
+            throw std::runtime_error("");
+        }
         if (login_status.empty()) {
             throw std::runtime_error("");
         }
@@ -89,7 +139,16 @@ public:
         user_storage.update(a,user_info[0]);
     }
 
-    static void _useradd(char user_id[31], char password[31], int privilege, char username[31]) {
+    static void _useradd(char user_id[31], char password[31], const int privilege, char username[31]) {
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_id(password)) {
+            throw std::runtime_error("");
+        }
+        if (check_User_name(username)) {
+            throw std::runtime_error("");
+        }
         if (login_status.empty()) {
             throw std::runtime_error("");
         }
@@ -104,6 +163,9 @@ public:
     }
 
     static void _delete(char user_id[31]) {
+        if (check_User_id(user_id)) {
+            throw std::runtime_error("");
+        }
         if (login_map[string(user_id)]) {
             throw std::runtime_error("");
         }
