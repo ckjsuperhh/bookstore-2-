@@ -54,8 +54,6 @@ public:
             tokens.emplace_back(a.substr(l, r - l));
             l = r;
         }
-
-        //cout<<info<<std::endl;
         if (info == "su") {
             if (cnt == 2) {
                 user_operation::_login(char_more<char[31]>(tokens[0]).get_char().data(), char_more<char[31]>(tokens[1]).get_char().data());
@@ -165,8 +163,6 @@ public:
             vector<string> infos;
             for (int i = 0; i < types.size(); i++) {
                 if (types[i] == "ISBN" && tokens[i].size() > 6) {
-                    // cout<<ISBN[login_status.back().num].ISBN<<std::endl;
-                    // cout<<char_more<char[21]>(tokens[i].substr(6)).get_char().data()<<std::endl;
                     if (strcmp(ISBN.read(login_status.back().num).ISBN, char_more<char[21]>(tokens[i].substr(6)).get_char().data()) == 0) {
                         throw std::runtime_error("");
                     }

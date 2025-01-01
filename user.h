@@ -16,12 +16,10 @@ public:
         if (user_info.empty()) {
             throw std::runtime_error("");
         }
-        // cout<<user_storage[user_info[0]].password<<std::endl;
         if (strcmp(user_storage.read(user_info[0]).password, password.data()) != 0) {
             throw std::runtime_error("");
         }
         login_map[user_id]++;
-
         login_status.emplace_back(char_more<char[31]>(user_id).get_char().data(), user_storage.read(user_info[0]).privilege);
     }
 
@@ -64,8 +62,6 @@ public:
         if (user_info.empty()) {
             throw std::runtime_error("");
         }
-        // std::cout<<user_storage[user_info[0]].password<<std::endl;
-        // std::cout<<current_password<<std::endl;
         if (strcmp(user_storage.read(user_info[0]).password, current_password.data())!=0) {
             throw std::runtime_error("");
         }
@@ -81,7 +77,7 @@ public:
         if (login_status.empty()) {
             throw std::runtime_error("");
         }
-        auto user_info = user_file.search(user_id);
+        const auto user_info = user_file.search(user_id);
         if (user_info.empty()) {
             throw std::runtime_error("");
         }
@@ -100,7 +96,6 @@ public:
         if (const auto user_info = user_file.search(user_id); !user_info.empty()) {
             throw std::runtime_error("");
         }
-        // cout<<login_status.back().privilege<<std::endl;
         if (!(login_status.back().privilege >= 3 && login_status.back().privilege > privilege)) {
             throw std::runtime_error("");
         }

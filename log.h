@@ -6,9 +6,9 @@
 #define LOG_H
 
 #include <iomanip>
+#include<iostream>
 #include"DataBase.h"
 #include"user.h"
-#include<iostream>
 
 class log {
 public:

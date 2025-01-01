@@ -5,11 +5,10 @@
 #ifndef BOOK_H
 #define BOOK_H
 #include <algorithm>
-
-#include"DataBase.h"
 #include<vector>
 #include<map>
 #include<iostream>
+#include"DataBase.h"
 
 using std::vector;
 using std::map;
@@ -112,7 +111,6 @@ public:
                 cout << x.ISBN << "\t" << x.BookName << "\t" << x.Author << "\t" << x.KeyWord << "\t" <<std::fixed<<std::setprecision(2)<< std::stod(x.Price)<< "\t" << x.Storage << "\n";
             }
         } else if (a == "keyword") {
-            // cout<<information<<std::endl;
             if (const auto key = find_KeyWord(information); key.size() > 1 || key.empty()) {
                 throw std::runtime_error("");
             }
@@ -188,29 +186,22 @@ public:
             const auto keys1=find_KeyWord(information);
             const auto keys2=find_KeyWord(ISBN.read(login_status.back().num).KeyWord);
             for (const auto& x:keys2) {
-                // cout<<"key_word="<<x<<std::endl;
                 KeyWord_reference.Val_delete(char_more<char[61]>(x).get_char().data(), login_status.back().num);
             }
             for (const auto& x:keys1) {
-                // cout<<"key_word="<<x<<std::endl;
                 KeyWord_reference.insert(char_more<char[61]>(x).get_char().data(), login_status.back().num);
             }
             auto tmp=ISBN.read(login_status.back().num);
             strcpy(tmp.KeyWord, information);
             ISBN.update(tmp,login_status.back().num);
         } else if (a == "price") {
-            // cout<<"price"<<ISBN[login_status.back().num].Price<<std::endl;
-            // cout<<"changed price"<<information<<std::endl;
             auto tmp=ISBN.read(login_status.back().num);
             strncpy(tmp.Price, information,14);
             ISBN.update(tmp,login_status.back().num);
-            // cout<<"price"<<ISBN[login_status.back().num].Price<<std::endl;
-            // cout<<"changed price"<<information<<std::endl;
         }
     }
 
     static void modify_ISBN(char ISBN_[21]) {
-        //std::cout<<"delete:"<<ISBN[login_status.back().num].ISBN<<' '<<login_status.back().num<<"\tchange:"<<ISBN[login_status.back().num].ISBN<<"->"<<ISBN_<<"\tinsert:"<<ISBN_<<" "<<login_status.back().num<<std::endl;
         ISBN_reference.Val_delete(ISBN.read(login_status.back().num).ISBN, login_status.back().num);
         auto tmp=ISBN.read(login_status.back().num);
         strcpy(tmp.ISBN, ISBN_);
@@ -225,7 +216,6 @@ public:
         if (login_status.back().num == -1 || quantity <= 0 || total_cost <= 0) {
             throw std::runtime_error("");
         }
-
         finance_list.write({0, total_cost});
         auto a=ISBN.read(login_status.back().num);
         a.Storage += quantity;

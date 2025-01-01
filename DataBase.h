@@ -6,7 +6,6 @@
 #define DATABASE_1_H
 #include <cstring>
 #include <fstream>
-#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -20,6 +19,8 @@ using std::ofstream;
 using std::vector;
 using std::pair;
 using std::set;
+using std::unordered_map;
+
 
 inline int n;
 struct name_and_password;
@@ -544,10 +545,6 @@ public:
     }
 };
 
-using std::vector;
-using std::map;
-using std::unordered_map;
-
 template<class T>
 class char_more {
 private:
@@ -598,9 +595,7 @@ struct book_info {
     char KeyWord[61] = "";
     char Price[14] = "0";
     int Storage = 0;
-
     book_info() = default;
-
     explicit book_info(const char ISBN[21]) {
         strcpy(this->ISBN, ISBN);
     }
@@ -609,7 +604,7 @@ struct book_info {
 struct finance_info {
     double income=0;
     double outcome=0;
-finance_info()=default;
+    finance_info()=default;
     finance_info(const double &income, const double &outcome): income(income), outcome(outcome) {
     }
 };
