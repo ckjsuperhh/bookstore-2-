@@ -9,14 +9,14 @@ using namespace std;
    while (true) {
       try {
          bool ok=true;
-         while (getline(cin,str)) {
+         while (getline(cin,str) and not cin.eof()) {
             // cout<<++cnt<<std::endl;
             // cout<<str<<std::endl;
             ok=false;
             cmd::analyse(str);
          }
-         if (ok) {
-            return 0;
+         if (ok or cin.eof()) {
+            exit(0);
          }
       }catch (...) {
          cout<<"Invalid\n";
