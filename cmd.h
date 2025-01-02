@@ -26,7 +26,7 @@ public:
     }
 
     static bool check_ISBN(const char x[61]) {
-        for (const auto &a:x) {
+        for (int a=0;x[a]!='\0';a++) {
             if (!(32<=a&&a<=126)){
                 return true;
             }
@@ -34,32 +34,32 @@ public:
         return false;
     }
     static bool check_BookName(const char x[61]) {
-        for (const auto &a:x) {
-            if (!(32<=a&&a<=126&&a!='\"')){
+        for (int a=0;x[a]!='\0';a++) {
+            if (!(32<=x[a]&&x[a]<=126&&x[a]!='\"')){
                 return true;
             }
         }
         return false;
     }
     static bool check_Author(const char x[61]) {
-        for (const auto &a:x) {
-            if (!(32<=a&&a<=126&&a!='\"')){
+        for (int a=0;x[a]!='\0';a++) {
+            if (!(32<=x[a]&&x[a]<=126&&x[a]!='\"')){
                 return true;
             }
         }
         return false;
     }
     static bool check_KeyWord(const char x[61]) {
-        for (const auto &a:x) {
-            if (!(32<=a&&a<=126&&a!='\"')){
+        for (int a=0;x[a]!='\0';a++) {
+            if (!(32<=x[a]&&x[a]<=126&&x[a]!='\"')){
                 return true;
             }
         }
         return false;
     }
     static bool check_Price(const char x[14]) {
-        for (const auto &a:x) {
-            if (!('0'<=a&&a<='9')||a=='.'){
+        for (int a=0;x[a]!='\0';a++) {
+            if (!('0'<=x[a]&&x[a]<='9')||x[a]=='.'){
                 return true;
             }
         }

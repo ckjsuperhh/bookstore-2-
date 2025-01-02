@@ -12,8 +12,8 @@ using std::unordered_map;
 class user_operation {
 public:
     static bool check_User_id(const char x[31]) {
-        for (const auto &a:x) {
-            if (!(a=='_'||('a'<=a&&a<='z')||('A'<=a&&a<='Z')||('0'<=a&&a<='9'))){
+        for (int a=0;x[a]!='\0';a++) {
+            if (!(x[a]=='_'||('a'<=x[a]&&x[a]<='z')||('A'<=x[a]&&x[a]<='Z')||('0'<=x[a]&&x[a]<='9'))){
                 return true;
             }
         }
@@ -21,8 +21,8 @@ public:
     }
 
     static bool check_User_name(const char x[31]) {
-        for (const auto &a:x) {
-            if (!(32<=a&&a<=126)){
+        for (int a=0;x[a]!='\0';a++) {
+            if (!(32<=x[a]&&x[a]<=126)){
                 return true;
             }
         }
